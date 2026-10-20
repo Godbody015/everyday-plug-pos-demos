@@ -2,6 +2,6 @@
   "name": "everyday-plug-pos-demos",
   "compatibility_date": "2026-10-20",
   "assets": {
-    "directory": "./"
+    "directory": "./pos-demos"
   }
 }
