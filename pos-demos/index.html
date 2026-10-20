@@ -1,1 +1,161 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>POS systems for South African businesses | Everyday Plug</title>
+<meta name="description" content="Try a live point-of-sale demo for your café, restaurant, salon or store. Rand pricing, 15% VAT, works on any device.">
+<link rel="manifest" href="/manifest.json"><link rel="icon" href="/shared/icons/icon-192.png"><link rel="apple-touch-icon" href="/shared/icons/icon-192.png"><meta name="theme-color" content="#0f4d3a">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--green:#0f4d3a;--deep:#0a3528;--gold:#f2b705;--paper:#f6f1e7;--ink:#17201c;--mute:#5d6b64;--line:#ddd5c4;
+--head:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;--body:"Figtree","Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);line-height:1.55;padding-bottom:env(safe-area-inset-bottom)}
+h1,h2,h3{font-family:var(--head);line-height:1.08;margin:0}
+a{color:inherit}.wrap{max-width:1040px;margin:0 auto;padding:0 1.2rem}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.btn{display:inline-block;padding:.95rem 1.5rem;border-radius:999px;font-weight:600;text-decoration:none;border:2px solid transparent}
+.btn.gold{background:var(--gold);color:#241a00}.btn.line{border-color:rgba(255,255,255,.55);color:#fff}
+.btn.dark{background:var(--green);color:#fff}.btn.out{border-color:var(--green);color:var(--green)}
 
+.hero{background:var(--green);color:#fff;padding:calc(3.5rem + env(safe-area-inset-top)) 0 4rem}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:3rem;align-items:center}
+.logo{display:block;width:150px;height:auto;margin:0 0 1.6rem -.4rem}
+.hero h1{font-size:clamp(2.4rem,6vw,4.1rem);font-weight:800;letter-spacing:-.02em}
+.hero p{font-size:1.15rem;max-width:34rem;margin:1.2rem 0 2rem;color:#d6e6de}
+.cta{display:flex;gap:.8rem;flex-wrap:wrap}.note{font-size:.9rem;color:#a9c7ba;margin-top:1rem}
+
+.printer{transform:rotate(1.5deg);width:100%;max-width:400px;justify-self:center}
+.slot{height:16px;background:#082a20;border-radius:10px 10px 4px 4px;position:relative;z-index:2;box-shadow:inset 0 -3px 0 rgba(0,0,0,.35)}
+.slot::after{content:"";position:absolute;right:12px;top:5px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.feed{overflow:hidden;min-height:23rem;margin:0 8px;filter:drop-shadow(0 20px 24px rgba(0,0,0,.35))}
+.receipt{background:#fffdf8;color:var(--ink);padding:1.6rem 1.5rem 2.4rem;font-family:ui-monospace,Consolas,monospace;font-size:.95rem;transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .6s;
+-webkit-mask:radial-gradient(circle 7px at 50% 100%,#0000 98%,#000) 0 100%/16px 100% repeat-x;mask:radial-gradient(circle 7px at 50% 100%,#0000 98%,#000) 0 100%/16px 100% repeat-x}
+.receipt.pre{transform:translateY(-104%);transition:none}
+.receipt.out{transform:translateX(115%) rotate(8deg);opacity:0;transition:transform .7s ease-in,opacity .7s}
+.receipt h3{font-size:1.2rem;text-align:center;margin-bottom:.2rem}.receipt .sub{text-align:center;color:var(--mute);font-size:.8rem;margin-bottom:1rem}
+.receipt .r{display:flex;justify-content:space-between;gap:1rem;padding:.25rem 0}.receipt small{display:block;color:var(--mute)}
+.receipt .mute{color:var(--mute)}.receipt hr{border:0;border-top:2px dashed var(--line);margin:.8rem 0}.receipt .tot{font-size:1.35rem;font-weight:700}
+.a{opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s}.a.in{opacity:1;transform:none}
+.receipt .paid{display:block;width:max-content;margin:1rem auto 0;padding:.25rem .8rem;border:2px solid var(--green);border-radius:4px;color:var(--green);font-weight:700;transform:scale(1.8) rotate(-10deg);transition:opacity .25s,transform .35s cubic-bezier(.3,1.6,.5,1)}
+.receipt .paid.in{transform:rotate(-3deg) scale(1)}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.2rem;justify-content:center}
+.chips button{font:600 .85rem var(--body);color:#fff;background:transparent;border:1.5px solid rgba(255,255,255,.45);border-radius:999px;padding:.4rem .9rem;cursor:pointer}
+.chips button[aria-pressed=true]{background:var(--gold);border-color:var(--gold);color:#241a00}
+@media(prefers-reduced-motion:reduce){.receipt,.a,.paid{transition:none!important}}
+
+section{padding:4rem 0}
+h2{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-.015em;max-width:30rem}
+.lead{color:var(--mute);max-width:36rem;margin:.8rem 0 2rem}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem 2rem}
+.cols h3{font-size:1.2rem;margin-bottom:.4rem}.cols p{margin:0;color:var(--mute)}
+.cols>div{border-top:3px solid var(--gold);padding-top:1rem}
+
+.demos{background:#fff;border-block:1px solid var(--line)}
+.dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.dc{display:flex;flex-direction:column;gap:.4rem;padding:1.2rem;border:1px solid var(--line);border-radius:14px;text-decoration:none;background:var(--paper);min-height:170px}
+.dc b{font-family:var(--head);font-size:1.3rem}.dc span{color:var(--mute);font-size:.92rem;flex:1}
+.dc em{font-style:normal;font-weight:600;color:var(--green)}
+.dc.live{background:var(--green);color:#fff;border-color:var(--green)}.dc.live span{color:#cfe3d9}.dc.live em{color:var(--gold)}
+.dc.soon{opacity:.6;pointer-events:none}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;counter-reset:s}
+.steps div{counter-increment:s}.steps div::before{content:counter(s);display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--green);color:var(--gold);font:800 1.2rem var(--head);margin-bottom:.8rem}
+.steps h3{font-size:1.15rem;margin-bottom:.3rem}.steps p{margin:0;color:var(--mute)}
+
+.final{background:var(--deep);color:#fff;text-align:center}
+.final h2{margin:0 auto}.final p{color:#b7d0c4;margin:1rem auto 2rem;max-width:34rem}.final .cta{justify-content:center}
+footer{background:var(--deep);color:#8fb0a1;text-align:center;font-size:.85rem;padding:0 1rem 2rem}
+
+@media(max-width:860px){.hero .wrap,.cols,.steps{grid-template-columns:1fr}.dgrid{grid-template-columns:1fr 1fr}.printer{transform:none}}
+@media(max-width:480px){.dgrid{grid-template-columns:1fr}}
+</style></head><body>
+
+<header class="hero"><div class="wrap">
+  <div>
+    <img class="logo" src="/shared/icons/logo.png" alt="Everyday Plug" width="150" height="138">
+    <h1>Serve faster. Lose fewer sales.</h1>
+    <p>Point-of-sale systems for South African cafés, restaurants, salons and stores. Try a live demo right now, no sign-up needed.</p>
+    <div class="cta">
+      <a class="btn gold" href="/cafe/">Try the café demo</a>
+      <a class="btn line" href="https://wa.me/27XXXXXXXXX?text=Hi%20Everyday%20Plug%2C%20I%27d%20like%20a%20POS%20for%20my%20business">Chat on WhatsApp</a>
+    </div>
+    <div class="note">Prices in Rand. 15% VAT worked out for you.</div>
+  </div>
+  <div class="printer" role="group" aria-label="Sample till slips from four kinds of business">
+    <div class="slot"></div><div class="feed"><div class="receipt" id="rc" aria-hidden="true"></div></div>
+    <div class="chips" id="chips"></div>
+  </div>
+</div></header>
+
+<section><div class="wrap">
+  <h2>Built for the way you really trade</h2>
+  <p class="lead">No training course. Your staff tap, charge and move on to the next customer.</p>
+  <div class="cols">
+    <div><h3>Keeps going when the internet drops</h3><p>Once opened, the app keeps working offline, so a bad connection or load-shedding doesn’t stop a sale.</p></div>
+    <div><h3>VAT done for you</h3><p>Every receipt shows the VAT portion in Rand, so end-of-day totals are clear and nothing is worked out by hand.</p></div>
+    <div><h3>Runs on what you already own</h3><p>Use a phone, tablet or laptop. No expensive till hardware needed to get started.</p></div>
+  </div>
+</div></section>
+
+<section class="demos"><div class="wrap">
+  <h2>Try it before you decide</h2>
+  <p class="lead">Every demo is fully clickable. Tap around like a customer is waiting.</p>
+  <div class="dgrid">
+    <a class="dc live" href="/cafe/"><b>Café</b><span>Fast counter sales, sizes, milk options, loyalty stamps and daily totals.</span><em>Open demo</em></a>
+    <a class="dc soon" href="/restaurant/"><b>Restaurant</b><span>Tables, kitchen orders and split bills.</span><em>Coming soon</em></a>
+    <a class="dc soon" href="/salon/"><b>Salon</b><span>Appointments, stylists and deposits.</span><em>Coming soon</em></a>
+    <a class="dc soon" href="/store/"><b>Small store</b><span>Stock levels, search and daily sales.</span><em>Coming soon</em></a>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>From demo to your counter</h2>
+  <p class="lead">We do the setup so you can focus on customers.</p>
+  <div class="steps">
+    <div><h3>Try a demo</h3><p>See how it works for a business like yours.</p></div>
+    <div><h3>Send us your menu</h3><p>Your items, prices and branding go into the system.</p></div>
+    <div><h3>Start selling</h3><p>We set it up on your device and show your team how to use it.</p></div>
+  </div>
+</div></section>
+
+<section class="final"><div class="wrap">
+  <h2>Want to see it with your menu?</h2>
+  <p>Message us and we’ll show you a version built around your business.</p>
+  <div class="cta">
+    <a class="btn gold" href="https://wa.me/27XXXXXXXXX?text=Hi%20Everyday%20Plug%2C%20I%27d%20like%20a%20POS%20for%20my%20business">Chat on WhatsApp</a>
+    <a class="btn line" href="mailto:your@email.com?subject=POS%20for%20my%20business">Send an email</a>
+  </div>
+</div></section>
+
+<footer>© Everyday Plug. These are front-end demos; sales data stays in your browser.</footer>
+<script>
+(()=>{
+const B=[
+{type:"Café",name:"Corner Café",ref:"Order #14 · Counter",items:[{n:"Latte",s:"Medium, oat milk",p:54},{n:"Flat white",s:"Small, full cream",p:42},{n:"Butter croissant",s:"Fresh today",p:32}]},
+{type:"Restaurant",name:"Braai & Grill",ref:"Order #32 · Table 6",items:[{n:"Rump steak 300g",s:"Medium rare",p:165},{n:"Peri-peri chicken",s:"Half, spicy",p:119},{n:"Ginger beer × 2",s:"R28 each",p:56}]},
+{type:"Salon",name:"Glow Hair Studio",ref:"Booking #08 · Thandi",items:[{n:"Cut & blow-dry",s:"Stylist: Lerato",p:280},{n:"Treatment",s:"Deep conditioning",p:150},{n:"Deposit paid",s:"Booked online",p:-100}]},
+{type:"Store",name:"Corner Store",ref:"Sale #207 · Till 1",items:[{n:"White bread",s:"2 × R17.50",p:35},{n:"Full cream milk 2L",s:"Only 3 left in stock",p:38},{n:"Maize meal 5kg",s:"Special price",p:62}]}];
+const R=n=>(n<0?"−":"")+"R"+Math.abs(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,",");
+const rc=document.getElementById("rc"),chips=document.getElementById("chips"),reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let i=0,T=[];const at=(f,ms)=>T.push(setTimeout(f,ms)),stop=()=>{T.forEach(clearTimeout);T=[]};
+chips.innerHTML=B.map((b,k)=>`<button type="button" data-k="${k}">${b.type}</button>`).join("");
+chips.onclick=e=>{const k=e.target.dataset.k;if(k===undefined)return;i=+k;run()};
+function run(){
+  stop();chips.querySelectorAll("button").forEach((x,k)=>x.setAttribute("aria-pressed",k===i));
+  const b=B[i],total=b.items.reduce((s,x)=>s+x.p,0),vat=total-total/1.15;
+  rc.innerHTML=`<h3>${b.name}</h3><div class="sub">${b.ref}</div>`+b.items.map(x=>`<div class="r a"><span>${x.n}<small>${x.s}</small></span><span>${R(x.p)}</span></div>`).join("")+
+   `<hr><div class="r a mute"><span>Includes VAT (15%)</span><span>${R(vat)}</span></div><div class="r a tot"><span>Total</span><span id="tv">${R(reduce?total:0)}</span></div><div class="paid a">PAID · Thank you</div>`;
+  const rows=[...rc.querySelectorAll(".a")];
+  if(reduce){rc.className="receipt";rows.forEach(r=>r.classList.add("in"));return}
+  rc.className="receipt pre";void rc.offsetWidth;rc.className="receipt";
+  rows.forEach((r,k)=>at(()=>r.classList.add("in"),k<5?700+k*380:3100));
+  at(()=>{const tv=rc.querySelector("#tv"),t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/700);tv.textContent=R(total*p);if(p<1)requestAnimationFrame(f)})(t0)},2220);
+  at(()=>rc.classList.add("out"),6600);
+  at(()=>{i=(i+1)%B.length;run()},7400);
+}
+run();
+})();
+</script>
+<script src="/shared/js/pwa.js"></script>
+</body></html>
