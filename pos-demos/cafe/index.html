@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Café POS demo</title><link rel="manifest" href="/manifest.json"><meta name="theme-color" content="#7a3b1d">
+<link rel="stylesheet" href="/shared/css/base.css"><link rel="stylesheet" href="style.css"></head><body>
+<header class="bar"><a href="/">← Demos</a><h1>Café POS</h1><span id="today" class="pill"></span><button id="reset" class="btn">Reset demo</button></header>
+<div class="pos">
+<section class="menu"><nav id="cats" class="tabs"></nav><div id="opts" class="opts"></div><div id="grid" class="grid"></div></section>
+<aside class="panel"><h2>Current order</h2><ul id="lines"></ul><div id="loyalty" class="stamps"></div>
+<div id="totals"></div><button id="pay" class="btn primary">Charge</button><button id="clear" class="btn">Clear order</button></aside>
+</div>
+<dialog id="receipt"></dialog>
+<script src="/shared/js/currency.js"></script><script src="/shared/js/cart.js"></script><script src="/shared/js/storage.js"></script>
+<script src="/shared/js/pwa.js"></script><script src="menu.js"></script><script src="app.js"></script></body></html>

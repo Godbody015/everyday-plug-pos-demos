@@ -1,0 +1,21 @@
+.pos{display:grid;grid-template-columns:1fr 340px;height:calc(100% - 58px)}
+@media(max-width:800px){.pos{grid-template-columns:1fr;height:auto}.panel{border-left:0;border-top:1px solid var(--line)}}
+.menu{padding:1rem;overflow:auto}
+.tabs,.opts{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem;align-items:center}
+.tab,.opt{border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:.5rem 1rem;min-height:40px}
+.tab.on,.opt.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.opts small{color:var(--mute);margin:0 .2rem 0 .6rem}
+.item{display:flex;flex-direction:column;justify-content:space-between;gap:.6rem;min-height:92px;text-align:left;padding:.8rem;background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+.item:active{transform:scale(.97)}.item b{font-size:.95rem}.item span{color:var(--mute)}
+.panel{display:flex;flex-direction:column;gap:.6rem;padding:1rem;background:var(--panel);border-left:1px solid var(--line);overflow:auto}
+.panel h2{margin:0;font-size:1rem}
+#lines{list-style:none;margin:0;padding:0;flex:1;min-height:80px}
+#lines li{display:grid;grid-template-columns:1fr auto auto;gap:.5rem;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--line);font-size:.9rem}
+#lines em{display:block;font-style:normal;color:var(--mute);font-size:.8rem}
+.qty{display:flex;align-items:center;gap:.3rem}.qty button{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.empty{color:var(--mute);padding:1rem 0}
+.row{display:flex;justify-content:space-between}.row.big{font-size:1.4rem;font-weight:700}.row.mute{color:var(--mute);font-size:.85rem}
+.stamps{display:flex;gap:.3rem;align-items:center;font-size:.85rem;color:var(--mute);flex-wrap:wrap}
+.dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--accent)}.dot.f{background:var(--accent)}
+dialog{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);color:var(--ink);min-width:min(340px,90vw)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
