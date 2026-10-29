@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pharmacy POS</title>
+<style>
+:root{--bg:#f4f6f3;--card:#fff;--ink:#17201d;--mute:#5d6b66;--line:#d9e0db;--pine:#12372f;--green:#1f9d6b;--amber:#b87a0e;--red:#b3402f;--onpine:#f4f6f3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1714;--card:#18231f;--ink:#e8efeb;--mute:#93a39c;--line:#2a3a34;--pine:#0b2b24;--green:#34c58d;--amber:#e0a63a;--red:#ef7b69;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.4 "Figtree","Segoe UI",system-ui,sans-serif}
+header{background:var(--pine);color:var(--onpine);display:flex;align-items:center;gap:16px;padding:10px 16px}
+header h1{font-size:18px;margin:0;font-weight:700;flex:1}
+nav button{background:none;border:0;color:inherit;font:inherit;padding:10px 16px;border-radius:8px;opacity:.7;cursor:pointer}
+nav button.on{background:rgba(255,255,255,.14);opacity:1;font-weight:700}
+main{padding:14px 16px;max-width:1200px;margin:0 auto}
+.sell{display:grid;grid-template-columns:1fr 360px;gap:14px}
+@media(max-width:820px){.sell{grid-template-columns:1fr}}
+input,select,button{font:inherit}
+input{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:12px}
+.scan{width:100%;font-size:18px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.p{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:left;cursor:pointer;color:var(--ink);min-height:84px;display:flex;flex-direction:column;justify-content:space-between}
+.p:active{background:var(--line)}
+.p b{font-size:15px}.p span{color:var(--mute);font-size:13px}
+.p.out{opacity:.45}
+.cart{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;align-self:start}
+.line{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.q{display:flex;align-items:center;gap:6px}
+.q button{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.tot{font-size:30px;font-weight:700;display:flex;justify-content:space-between}
+.pay{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.btn{border:0;border-radius:10px;padding:14px;font-weight:700;cursor:pointer;background:var(--green);color:#04251a}
+.btn.alt{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.mute{color:var(--mute);font-size:14px}
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden}
+th,td{padding:10px;text-align:left;border-bottom:1px solid var(--line);font-size:15px}
+.scroll{overflow-x:auto}
+td input{width:90px;padding:8px}
+.low{color:var(--amber);font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat b{display:block;font-size:26px}
+.form{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.form input{flex:1;min-width:130px}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);padding:20px;max-width:380px;width:92%}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+pre{font:14px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap;margin:0 0 12px}
+h2{margin:6px 0 10px;font-size:20px}
+.hide{display:none}
+</style>
+</head>
+<body>
+<header><h1>Pharmacy POS</h1><nav id="nav"></nav></header>
+<main>
+<section id="sell" class="sell">
+  <div>
+    <input id="scan" class="scan" placeholder="Scan barcode or search product" autocomplete="off">
+    <div id="grid" class="grid"></div>
+  </div>
+  <div class="cart">
+    <div id="lines"></div>
+    <div class="tot"><span>Total</span><span id="total">R0.00</span></div>
+    <div class="mute" id="vat"></div>
+    <div class="pay">
+      <button class="btn" data-t="Cash">Cash</button>
+      <button class="btn" data-t="Card">Card</button>
+      <button class="btn" data-t="Account">Account</button>
+    </div>
+    <button class="btn alt" id="clear">Clear sale</button>
+  </div>
+</section>
+<section id="stock" class="hide">
+  <h2>Stock</h2>
+  <form class="form" id="addp">
+    <input id="n_name" placeholder="Product name" required>
+    <input id="n_bc" placeholder="Barcode">
+    <input id="n_price" type="number" step="0.01" min="0" placeholder="Price (incl. VAT)" required>
+    <input id="n_stock" type="number" min="0" placeholder="Opening stock" required>
+    <button class="btn" type="submit">Add product</button>
+  </form>
+  <div class="scroll"><table><thead><tr><th>Product</th><th>Barcode</th><th>Price</th><th>In stock</th><th>Receive stock</th></tr></thead><tbody id="stbody"></tbody></table></div>
+</section>
+<section id="cash" class="hide">
+  <h2>Cash-up</h2>
+  <div class="stats" id="stats"></div>
+  <div class="scroll"><table><thead><tr><th>Time</th><th>Items</th><th>Tender</th><th>Total</th></tr></thead><tbody id="sales"></tbody></table></div>
+  <p class="mute">Low stock (5 or fewer): <span id="lowlist"></span></p>
+  <p><button class="btn alt" id="csv">Download today’s sales (CSV)</button> <button class="btn alt" id="reset">Reset demo data</button></p>
+</section>
+</main>
+
+<dialog id="payd"><h2 id="paytitle"></h2>
+  <div id="cashbox"><label class="mute">Cash received</label><input id="tend" type="number" step="0.01" style="width:100%;font-size:22px;margin:6px 0"><div id="change" class="tot" style="font-size:22px"></div></div>
+  <p class="mute" id="paynote"></p>
+  <div class="pay" style="grid-template-columns:1fr 1fr"><button class="btn alt" id="payno">Back</button><button class="btn" id="payok">Complete sale</button></div>
+</dialog>
+<dialog id="recd"><pre id="rec"></pre><div class="pay" style="grid-template-columns:1fr 1fr"><button class="btn alt" id="prn">Print</button><button class="btn" id="recok">New sale</button></div></dialog>
+
+<script>
+const KEY="pharm_pos_v1",VAT=15;
+const $=s=>document.querySelector(s),R=n=>"R"+Number(n).toFixed(2);
+const demo=()=>({products:[
+ {id:1,name:"Panado 500mg 24s",bc:"6001001000011",price:42.99,stock:30},
+ {id:2,name:"Grandpa headache powder",bc:"6001001000028",price:14.5,stock:60},
+ {id:3,name:"Vitamin C 500mg 60s",bc:"6001001000035",price:89,stock:18},
+ {id:4,name:"Betadine 100ml",bc:"6001001000042",price:67.5,stock:12},
+ {id:5,name:"Plasters assorted 20s",bc:"6001001000059",price:24.95,stock:40},
+ {id:6,name:"Cough syrup 200ml",bc:"6001001000066",price:58,stock:4},
+ {id:7,name:"Hand sanitiser 500ml",bc:"6001001000073",price:49.99,stock:25},
+ {id:8,name:"Thermometer digital",bc:"6001001000080",price:119,stock:6}],
+ sales:[],next:9});
+let db;
+try{db=JSON.parse(localStorage.getItem(KEY))}catch(e){db=null}
+if(!db||!db.products)db=demo();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}};
+let cart=[],tender="";
+const tabs=[["sell","Sell"],["stock","Stock"],["cash","Cash-up"]];
+$("#nav").innerHTML=tabs.map(t=>`<button data-v="${t[0]}">${t[1]}</button>`).join("");
+function view(v){tabs.forEach(t=>{$("#"+t[0]).classList.toggle("hide",t[0]!==v)});
+ document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+ if(v==="stock")drawStock();if(v==="cash")drawCash();if(v==="sell")$("#scan").focus()}
+$("#nav").onclick=e=>{if(e.target.dataset.v)view(e.target.dataset.v)};
+
+function drawGrid(){const q=$("#scan").value.trim().toLowerCase();
+ const list=db.products.filter(p=>!q||p.name.toLowerCase().includes(q)||p.bc.includes(q));
+ $("#grid").innerHTML=list.map(p=>`<button class="p ${p.stock<1?"out":""}" data-id="${p.id}"><b>${p.name}</b><span>${R(p.price)} · ${p.stock} left</span></button>`).join("")||'<p class="mute">No product found. Add it under Stock.</p>'}
+function add(id){const p=db.products.find(x=>x.id==id);if(!p)return;
+ const l=cart.find(x=>x.id==id),have=l?l.qty:0;
+ if(have+1>p.stock){alert(p.name+": only "+p.stock+" in stock.");return}
+ l?l.qty++:cart.push({id:p.id,name:p.name,price:p.price,qty:1});drawCart()}
+function total(){return cart.reduce((s,l)=>s+l.price*l.qty,0)}
+function drawCart(){
+ $("#lines").innerHTML=cart.map(l=>`<div class="line"><div>${l.name}<div class="mute">${R(l.price)}</div></div><div class="q"><button data-m="${l.id}">−</button>${l.qty}<button data-p="${l.id}">+</button></div><b>${R(l.price*l.qty)}</b></div>`).join("")||'<p class="mute">Scan or tap a product to start a sale.</p>';
+ const t=total();$("#total").textContent=R(t);$("#vat").textContent="Includes VAT "+R(t*VAT/(100+VAT));
+ document.querySelectorAll(".pay [data-t]").forEach(b=>b.disabled=!cart.length)}
+$("#grid").onclick=e=>{const b=e.target.closest(".p");if(b)add(b.dataset.id)};
+$("#lines").onclick=e=>{const m=e.target.dataset.m,p=e.target.dataset.p;
+ if(p)add(p);if(m){const l=cart.find(x=>x.id==m);l.qty--;if(l.qty<1)cart=cart.filter(x=>x.id!=m);drawCart()}};
+$("#scan").oninput=drawGrid;
+$("#scan").onkeydown=e=>{if(e.key==="Enter"){const v=e.target.value.trim();const p=db.products.find(x=>x.bc&&x.bc===v);
+ if(p){add(p.id);e.target.value="";drawGrid()}}};
+$("#clear").onclick=()=>{cart=[];drawCart()};
+
+$(".pay").onclick=e=>{const t=e.target.dataset.t;if(!t||!cart.length)return;tender=t;
+ $("#paytitle").textContent=t+" · "+R(total());
+ $("#cashbox").classList.toggle("hide",t!=="Cash");
+ $("#paynote").textContent=t==="Card"?"Run the card on the card machine, then complete the sale.":t==="Account"?"Charged to the customer’s account.":"";
+ $("#tend").value="";$("#change").textContent="";$("#payd").showModal()};
+$("#tend").oninput=()=>{const c=$("#tend").value-total();$("#change").textContent=c>=0?"Change "+R(c):"Short by "+R(-c)};
+$("#payno").onclick=()=>$("#payd").close();
+$("#payok").onclick=()=>{const t=total();let given=t;
+ if(tender==="Cash"){given=parseFloat($("#tend").value);if(!(given>=t)){alert("Cash received is less than the total.");return}}
+ const sale={id:Date.now(),ts:new Date().toISOString(),items:cart.map(l=>({...l})),total:t,tender,given};
+ cart.forEach(l=>{const p=db.products.find(x=>x.id==l.id);p.stock-=l.qty});
+ db.sales.push(sale);save();$("#payd").close();receipt(sale);cart=[];drawCart();drawGrid()};
+function receipt(s){const d=new Date(s.ts);
+ const rows=s.items.map(l=>`${l.name}\n  ${l.qty} x ${R(l.price)}`.padEnd(0)+`  ${R(l.qty*l.price)}`).join("\n");
+ $("#rec").textContent=`PHARMACY\nTax invoice\n${d.toLocaleString()}\n--------------------------\n${rows}\n--------------------------\nTotal  ${R(s.total)}\nVAT ${VAT}% incl.  ${R(s.total*VAT/(100+VAT))}\n${s.tender}${s.tender==="Cash"?"  "+R(s.given)+"\nChange  "+R(s.given-s.total):""}\n\nThank you`;
+ $("#recd").showModal()}
+$("#recok").onclick=()=>{$("#recd").close();$("#scan").focus()};
+$("#prn").onclick=()=>{try{window.print()}catch(e){}};
+
+function drawStock(){$("#stbody").innerHTML=db.products.map(p=>`<tr><td>${p.name}</td><td>${p.bc||"-"}</td><td><input type="number" step="0.01" value="${p.price}" data-pr="${p.id}"></td><td class="${p.stock<=5?"low":""}">${p.stock}</td><td><input type="number" min="1" placeholder="Qty" id="rq${p.id}"> <button class="btn alt" data-rc="${p.id}">Add</button></td></tr>`).join("")}
+$("#stbody").onchange=e=>{const id=e.target.dataset.pr;if(id){const p=db.products.find(x=>x.id==id);const v=parseFloat(e.target.value);if(v>=0){p.price=v;save()}}};
+$("#stbody").onclick=e=>{const id=e.target.dataset.rc;if(!id)return;const q=parseInt($("#rq"+id).value);
+ if(q>0){db.products.find(x=>x.id==id).stock+=q;save();drawStock()}};
+$("#addp").onsubmit=e=>{e.preventDefault();
+ db.products.push({id:db.next++,name:$("#n_name").value.trim(),bc:$("#n_bc").value.trim(),price:parseFloat($("#n_price").value),stock:parseInt($("#n_stock").value)});
+ save();e.target.reset();drawStock();drawGrid()};
+
+const today=()=>db.sales.filter(s=>new Date(s.ts).toDateString()===new Date().toDateString());
+function drawCash(){const s=today(),sum=t=>s.filter(x=>x.tender===t).reduce((a,x)=>a+x.total,0),all=s.reduce((a,x)=>a+x.total,0);
+ $("#stats").innerHTML=[["Sales today",all],["Cash in drawer",sum("Cash")],["Card",sum("Card")],["Account",sum("Account")],["VAT included",all*VAT/(100+VAT)]].map(x=>`<div class="stat"><span class="mute">${x[0]}</span><b>${R(x[1])}</b></div>`).join("")+`<div class="stat"><span class="mute">Transactions</span><b>${s.length}</b></div>`;
+ $("#sales").innerHTML=s.slice().reverse().map(x=>`<tr><td>${new Date(x.ts).toLocaleTimeString()}</td><td>${x.items.reduce((a,l)=>a+l.qty,0)}</td><td>${x.tender}</td><td>${R(x.total)}</td></tr>`).join("")||'<tr><td colspan="4" class="mute">No sales yet today.</td></tr>';
+ const low=db.products.filter(p=>p.stock<=5).map(p=>p.name+" ("+p.stock+")");$("#lowlist").textContent=low.join(", ")||"none"}
+$("#csv").onclick=()=>{const rows=["time,tender,total"].concat(today().map(x=>`${x.ts},${x.tender},${x.total.toFixed(2)}`));
+ try{const a=document.createElement("a");a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(rows.join("\n"));a.download="sales-today.csv";a.click()}catch(e){alert("Download isn’t available in this view.")}};
+$("#reset").onclick=()=>{if(confirm("Reset all products and sales to the demo data?")){db=demo();save();cart=[];drawCart();drawCash();drawGrid()}};
+
+drawGrid();drawCart();view("sell");
+</script>
+</body>
+</html>
